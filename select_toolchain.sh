@@ -10,6 +10,9 @@ case "$BUILD_DKPRO_PACKAGE" in
   "3" )
     VERSION=3
   ;;
+  "4" )
+    VERSION=4
+  ;;
 esac
 
 while [ $VERSION -eq 0 ]

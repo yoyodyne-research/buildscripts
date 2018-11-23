@@ -192,20 +192,13 @@ DEVKITPRO_URL="http://downloads.sourceforge.net/devkitpro"
 patchdir=$(pwd)/$basedir/patches
 scriptdir=$(pwd)/$basedir/scripts
 
-archives="binutils-${BINUTILS_VER}.tar.bz2 gcc-${GCC_VER}.tar.bz2 newlib-${NEWLIB_VER}.tar.gz gdb-${GDB_VER}.tar.bz2"
+archives="binutils-${BINUTILS_VER}.tar.bz2 gcc-${GCC_VER}.tar.bz2 newlib-${NEWLIB_VER}.tar.gz gdb-${GDB_VER}.tar.gz"
 
 if [ $VERSION -eq 1 ]; then
 
-	targetarchives="libnds-src-${LIBNDS_VER}.tar.bz2 libgba-src-${LIBGBA_VER}.tar.bz2
-		libmirko-src-${LIBMIRKO_VER}.tar.bz2 dswifi-src-${DSWIFI_VER}.tar.bz2 maxmod-src-${MAXMOD_VER}.tar.bz2
-		default_arm7-src-${DEFAULT_ARM7_VER}.tar.bz2 libfilesystem-src-${FILESYSTEM_VER}.tar.bz2
-		libfat-src-${LIBFAT_VER}.tar.bz2 libctru-src-${LIBCTRU_VER}.tar.bz2"
+	targetarchives="libnds-src-$LIBNDS_VER.tar.gz libfat-src-$LIBFAT_VER.tar.gz"
 
-	hostarchives="gbatools-$GBATOOLS_VER.tar.bz2 gp32tools-$GP32_TOOLS_VER.tar.bz2
-		dstools-$DSTOOLS_VER.tar.bz2 grit-$GRIT_VER.tar.bz2 ndstool-$NDSTOOL_VER.tar.bz2
-		general-tools-$GENERAL_TOOLS_VER.tar.bz2 dlditool-$DLDITOOL_VER.tar.bz2 mmutil-$MMUTIL_VER.tar.bz2
-		dfu-util-$DFU_UTIL_VER.tar.bz2 stlink-$STLINK_VER.tar.bz2 3dstools-$TOOLS3DS_VER.tar.bz2
-		picasso-$PICASSO_VER.tar.bz2 3dslink-$LINK3DS_VER.tar.bz2"
+	hostarchives=""
 fi
 
 if [ $VERSION -eq 2 ]; then
@@ -244,23 +237,22 @@ extract_and_patch binutils $BINUTILS_VER bz2
 extract_and_patch gcc $GCC_VER bz2
 rm -fr gcc-$GCC_VER/zlib
 extract_and_patch newlib $NEWLIB_VER gz
-extract_and_patch gdb $GDB_VER bz2
+extract_and_patch gdb $GDB_VER gz
 
 for archive in $targetarchives
 do
-	destdir=$(echo $archive | sed -e 's/\(.*\)-src-\(.*\)\.tar\.bz2/\1-\2/' )
-	echo $destdir
+	destdir=$(echo $archive | sed -e 's/\(.*\)-src-\(.*\)\.tar\..*/\1-\2/' )
 	if [ ! -d $destdir ]; then
 		mkdir -p $destdir
-		bzip2 -cd "$SRCDIR/$archive" | tar -xf - -C $destdir || { echo "Error extracting "$archive; exit 1; }
+	tar -xf $SRCDIR/$archive || { echo "Error extracting "$archive; exit 1; }
 	fi
 done
 
 for archive in $hostarchives
 do
-	destdir=$(echo $archive | sed -e 's/\(.*\)-src-\(.*\)\.tar\.bz2/\1-\2/' )
+	destdir=$(echo $archive | sed -e 's/\(.*\)-src-\(.*\)\.tar\..*/\1-\2/' )
 	if [ ! -d $destdir ]; then
-		tar -xjf "$SRCDIR/$archive"
+		tar -xf "$SRCDIR/$archive"
 	fi
 done
 

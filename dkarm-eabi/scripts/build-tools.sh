@@ -3,7 +3,9 @@ cd $BUILDDIR
 
 for archive in $hostarchives
 do
-	dir=$(echo $archive | sed -e 's/\(.*\)\.tar\.bz2/\1/' )
+	echo $archive
+	dir=$(echo $archive | sed -e 's/\(.*\)\.tar\..*/\1/' )
+	echo $dir
 	cd $BUILDDIR/$dir
 	if [ ! -f configured ]; then
 		CXXFLAGS=$cflags CFLAGS=$cflags LDFLAGS=$ldflags ./configure --prefix=$prefix --disable-dependency-tracking $CROSS_PARAMS || { echo "error configuring $archive"; exit 1; }
